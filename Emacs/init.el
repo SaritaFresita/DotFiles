@@ -151,7 +151,9 @@
 
     (treemacs-follow-mode t)
     (treemacs-filewatch-mode t)
-    (treemacs-fringe-indicator-mode 'always))
+    (treemacs-fringe-indicator-mode 'always)
+
+    (treemacs-hide-gitignored-files-mode))
 
   :bind
   (:map global-map
@@ -176,17 +178,18 @@
 ;; Theme
 (load-theme 'spacemacs-dark t)
 
-;; Hide toolbar and top menu
-(tool-bar-mode -1)
+;; Some configurations
+(tool-bar-mode -1) ;; Hide toolbar and top menu
 (toggle-scroll-bar -1)
 (menu-bar-mode -1)
 
 (add-to-list 'default-frame-alist ; Hide the scrollbar
              '(vertical-scroll-bars . nil))
 
+(blink-cursor-mode 0) ;; Disable cursor blinking
+
 ;; Change backup files
-(setq backup-directory-alist `(("." . "~/.saves")))
-(setq backup-by-copying t)
+(setq make-backup-files nil)
 
 ;; all-the-icons
 (when (display-graphic-p)
@@ -322,5 +325,19 @@
   :config
   (org-roam-setup))
 
-(setq org-startup-indented t)
-(setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
+(require 'org-mode)
+
+(with-eval-after-load 'org-mode
+  (setq org-startup-indented t)
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
+  (setq org-clock-sound "~/.emacs.d/alert.wav")
+
+  ;; Org-babel
+  (org-babel-load-languages '((C . t))))
+
+;; Org-fc
+;; NOTE: I cloned it in "~/.emacs.d/el/org-fc"
+(add-to-list 'load-path "~/.emacs.d/el/org-fc")
+
+(require 'org-fc)
+(setq org-fc-directories '("~/OrgFc"))
