@@ -11,7 +11,7 @@
 					   magit treemacs-magit
 					   treemacs-projectile
 					   use-package dashboard
-					   spacemacs-theme emms
+					   spacemacs-theme emms visual-fill-column org-bullets
 					   all-the-icons elcord exwm org-roam org-tree-slide
 					   treemacs-all-the-icons))
 
@@ -172,8 +172,14 @@
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 ;; Show line and column number
-(setq column-number-mode t)
-(global-display-line-numbers-mode)
+;; (setq column-number-mode t)
+;; (global-display-line-numbers-mode)
+
+(defun show-column-and-lines ()
+  (setq column-number-mode t)
+  (display-line-numbers-mode))
+
+(add-hook 'prog-mode-hook #'show-column-and-lines)
 
 ;; Theme
 (load-theme 'spacemacs-dark t)
@@ -312,6 +318,61 @@
                         (agenta . 5)
                         (registers . 5)))
 
+;; Org
+(defun org-mode-setup ()
+  (org-indent-mode)
+  (variable-pitch-mode 1)
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
+  (org-display-inline-images)
+  (setq org-clock-sound "~/.emacs.d/alert.wav")
+  (visual-line-mode 1))
+
+(defun org-font-setup ()
+  ;; Replace list hyphen with dot
+  (font-lock-add-keywords 'org-mode
+                          '(("^ *\\([-]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+  ;; Set faces for heading levels
+  (dolist (face '((org-level-1 . 1.2)
+                  (org-level-2 . 1.1)
+                  (org-level-3 . 1.05)
+                  (org-level-4 . 1.0)
+                  (org-level-5 . 1.1)
+                  (org-level-6 . 1.1)
+                  (org-level-7 . 1.1)
+                  (org-level-8 . 1.1)))
+    (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+
+  ;; Ensure that anything that should be fixed-pitch in Org files appear that way
+  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
+
+(use-package org
+  :hook (org-mode . org-mode-setup)
+  :config
+  (setq org-ellipsis " ▾")
+  (org-font-setup))
+
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+(defun org-mode-visual-fill ()
+  (setq visual-fill-column-width 100
+        visual-fill-column-center-text t)
+  (visual-fill-column-mode 1))
+
+(use-package visual-fill-column
+  :hook (org-mode . org-mode-visual-fill))
+
 ;; Org Roam
 (use-package org-roam
   :ensure t
@@ -324,12 +385,6 @@
          ("C-c n i" . org-roam-node-insert))
   :config
   (org-roam-setup))
-
-(with-eval-after-load 'org
-  (setq org-startup-indented t)
-  (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
-  (setq org-startup-with-inline-images t)
-  (setq org-clock-sound "~/.emacs.d/alert.wav"))
 
 ;; Org-babel
 (org-babel-do-load-languages
@@ -349,7 +404,7 @@
 (emms-all)
 (emms-default-players)
 (setq emms-source-file-default-directory "~/Music")
-(setq emms-info-functions '(emms-info-exiftool))
+(setq emms-info-functions '(emms-info-tinytag))
 
 ;; org-tree-slide
 (defun presentation-setup ()
