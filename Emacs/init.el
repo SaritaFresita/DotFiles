@@ -11,8 +11,8 @@
 					   magit treemacs-magit
 					   treemacs-projectile
 					   use-package dashboard
-					   spacemacs-theme
-					   all-the-icons elcord exwm org-roam
+					   spacemacs-theme emms
+					   all-the-icons elcord exwm org-roam org-tree-slide
 					   treemacs-all-the-icons))
 
 (when (cl-find-if-not #'package-installed-p package-selected-packages)
@@ -325,15 +325,17 @@
   :config
   (org-roam-setup))
 
-(require 'org-mode)
-
-(with-eval-after-load 'org-mode
+(with-eval-after-load 'org
   (setq org-startup-indented t)
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
-  (setq org-clock-sound "~/.emacs.d/alert.wav")
+  (setq org-startup-with-inline-images t)
+  (setq org-clock-sound "~/.emacs.d/alert.wav"))
 
-  ;; Org-babel
-  (org-babel-load-languages '((C . t))))
+;; Org-babel
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . nil)
+   (C . t)))
 
 ;; Org-fc
 ;; NOTE: I cloned it in "~/.emacs.d/el/org-fc"
@@ -341,3 +343,29 @@
 
 (require 'org-fc)
 (setq org-fc-directories '("~/OrgFc"))
+
+;; EMMS
+(require 'emms-setup)
+(emms-all)
+(emms-default-players)
+(setq emms-source-file-default-directory "~/Music")
+(setq emms-info-functions '(emms-info-exiftool))
+
+;; org-tree-slide
+(defun presentation-setup ()
+  (setq text-scale-mode-amount 2.5)
+  (text-scale-mode 1))
+
+(defun presentation-end ()
+  (text-scale-mode 0))
+
+(use-package org-tree-slide
+  :hook ((org-tree-slide-play . presentation-setup)
+         (org-tree-slide-stop . presentation-end))
+  :custom
+  (org-tree-slide-slide-in-effect t)
+  (org-tree-slide-activate-message "Oniichan >.< yamete kudasaii")
+  (org-tree-slide-deactivate-message "uwu owo nya nya arigato")
+  (org-tree-single-header t)
+  (org-tree-slide-breadcrumbs " // ")
+  (org-image-actual-width nil))
