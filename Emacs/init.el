@@ -10,10 +10,10 @@
 					   dap-mode lsp-ui treemacs
 					   magit treemacs-magit
 					   treemacs-projectile
-					   use-package dashboard
-					   spacemacs-theme emms visual-fill-column org-bullets
+					   use-package dashboard abyss-theme password-store
+					   spacemacs-theme visual-fill-column org-bullets
 					   all-the-icons elcord exwm org-roam org-tree-slide
-					   treemacs-all-the-icons))
+					   treemacs-all-the-icons lyrics-fetcher))
 
 (when (cl-find-if-not #'package-installed-p package-selected-packages)
   (package-refresh-contents)
@@ -171,10 +171,10 @@
 (setq display-fill-column-indicator-column 80)
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
-;; Show line and column number
-;; (setq column-number-mode t)
-;; (global-display-line-numbers-mode)
+(set-frame-parameter (selected-frame) 'alpha '(90 . 85))
+(add-to-list 'default-frame-alist '(alpha . (90 . 85)))
 
+;; Show line and column number
 (defun show-column-and-lines ()
   (setq column-number-mode t)
   (display-line-numbers-mode))
@@ -182,7 +182,7 @@
 (add-hook 'prog-mode-hook #'show-column-and-lines)
 
 ;; Theme
-(load-theme 'spacemacs-dark t)
+(load-theme 'abyss t)
 
 ;; Some configurations
 (tool-bar-mode -1) ;; Hide toolbar and top menu
@@ -303,6 +303,18 @@
                           (exwm-workspace-switch-create ,i))))
                     (number-sequence 0 9))))
 
+  (setq exwm-input-simulation-keys
+        '(([?\C-b] . [left])
+          ([?\C-f] . [right])
+          ([?\C-p] . [up])
+          ([?\C-n] . [down])
+          ([?\C-a] . [home])
+          ([?\C-e] . [end])
+          ([?\M-v] . [prior])
+          ([?\C-v] . [next])
+          ([?\C-d] . [delete])
+          ([?\C-k] . [S-end delete])))
+
   (exwm-enable))
 
 ;; Dashboard
@@ -400,11 +412,18 @@
 (setq org-fc-directories '("~/OrgFc"))
 
 ;; EMMS
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/emms")
+
+(require 'emms)
 (require 'emms-setup)
 (emms-all)
 (emms-default-players)
 (setq emms-source-file-default-directory "~/Music")
-(setq emms-info-functions '(emms-info-tinytag))
+
+(setq emms-info-functions '(emms-info-tintytag))
+
+(autoload 'emms-smart-browse "emms-browser.el" "Browse with EMMS" t)
+(global-set-key [(f7)] 'emms-smart-browse)
 
 ;; org-tree-slide
 (defun presentation-setup ()
@@ -424,3 +443,11 @@
   (org-tree-single-header t)
   (org-tree-slide-breadcrumbs " // ")
   (org-image-actual-width nil))
+
+;; lyrics-fetcher
+(use-package lyrics-fetcher
+  :ensure t
+  :after (emms))
+
+(setq lyrics-fetcher-genius-access-token
+      (password-store-get "APIS/genius.com"))
