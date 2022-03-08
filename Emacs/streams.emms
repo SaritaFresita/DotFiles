@@ -1,0 +1,12 @@
+;;; This is an EMMS playlist file
+;; This includes the built-in list of streams which come with Emms by
+;; default. Emms has no affiliation of any kind with the streaming
+;; audio stations listed below, nor is this an endorsement of these
+;; stations. Instead, this is a collection of stations submitted to
+;; the project over the years by people who enjoy Emms. We hope you
+;; will enjoy them too.
+
+((*track* (type . url) (name . "https://lainon.life/radio/swing.mp3.m3u") (metadata "LainOn.Life: Swing" "https://lainon.life/radio/swing.mp3.m3u" 1 url))
+(*track* (type . url) (name . "https://lainon.life/radio/cyberia.mp3.m3u") (metadata "LainOn.Life: Cyberia" "https://lainon.life/radio/cyberia.mp3.m3u" 1 url))
+(*track* (type . url) (name . "https://lainon.life/radio/cafe.mp3.m3u") (metadata "LainOn.Life: Cafe" "https://lainon.life/radio/cafe.mp3.m3u" 1 url))
+(*track* (type . url) (name . "http://radio.anonops.com/RadioAnonOps.m3u") (metadata "AnonOps" "http://radio.anonops.com/RadioAnonOps.m3u" 1 url)))

@@ -1,0 +1,14 @@
+#!/bin/sh
+# Taken from here: https://superuser.com/a/1614606
+set -e
+
+tmpdir=$(mktemp --tmpdir -d scrot-xclip-XXXXXXX)
+trap 'rm -rf "${tmpdir}"' EXIT
+
+setxkbmap -option grab:break_actions
+xdotool key XF86Ungrab
+
+scrot "$@" "${tmpdir}"/'screenshot-%Y-%m-%d_%H:%M:%S.png' -e \
+    'exec xclip -quiet -t image/png -selection clipboard -i $f'
+
+echo "Clipboard got overwritten"

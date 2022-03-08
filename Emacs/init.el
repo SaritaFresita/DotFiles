@@ -9,8 +9,8 @@
 					   avy which-key helm-xref
 					   dap-mode lsp-ui treemacs
 					   magit treemacs-magit
-					   treemacs-projectile
-					   use-package dashboard abyss-theme password-store
+					   treemacs-projectile emms
+					   use-package dashboard abyss-theme
 					   spacemacs-theme visual-fill-column org-bullets
 					   all-the-icons elcord exwm org-roam org-tree-slide
 					   treemacs-all-the-icons))
@@ -171,8 +171,8 @@
 (setq display-fill-column-indicator-column 80)
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
-(set-frame-parameter (selected-frame) 'alpha '(90 . 85))
-(add-to-list 'default-frame-alist '(alpha . (90 . 85)))
+(set-frame-parameter (selected-frame) 'alpha '(85 . 80))
+(add-to-list 'default-frame-alist '(alpha . (85 . 80)))
 
 ;; Show line and column number
 (defun show-column-and-lines ()
@@ -245,10 +245,10 @@
   (require 'exwm-randr)
   (exwm-randr-enable)
   (start-process-shell-command "xrandr" nil "xrandr --output eDP1 --primary --mode 1366x768 --pos 0x0 --rotate normal")
-  (start-process-shell-command "xrandr" nil "xrandr --output DP-1 --mode 1600x900 --right-of eDP1")
+  (start-process-shell-command "xrandr" nil "xrandr --output DP1 --mode 1600x900 --right-of eDP1")
 
   ;; Assign workspaces to second monitor
-  (setq exwm-randr-workspace-monitor-plist '(1 "DP-1" 3 "DP-1" 5 "DP-1" 7 "DP-1" 9 "DP-1"))
+  (setq exwm-randr-workspace-monitor-plist '(1 "DP1" 3 "DP1" 5 "DP1" 7 "DP1" 9 "DP1"))
 
   ;; Load the system tray before exwm-init
   (require 'exwm-systemtray)
@@ -302,6 +302,21 @@
                           (interactive)
                           (exwm-workspace-switch-create ,i))))
                     (number-sequence 0 9))))
+
+  (exwm-input-set-key (kbd "<print>")
+        (lambda ()
+          (interactive)
+          (start-process-shell-command "~/Repositories/DotFiles/scrot-xclip --select --freeze" nil "~/Repositories/DotFiles/scrot-xclip --select --freeze")))
+
+  (exwm-input-set-key (kbd "<XF86AudioLowerVolume>")
+                      (lambda ()
+                        (interactive)
+                        (start-process-shell-command "amixer -q sset Master 3%-" nil "amixer -q sset Master 3%-")))
+
+  (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>")
+                      (lambda ()
+                        (interactive)
+                        (start-process-shell-command "amixer -q sset Master 3%+" nil "amixer -q sset Master 3%+")))
 
   (setq exwm-input-simulation-keys
         '(([?\C-b] . [left])
@@ -405,15 +420,13 @@
    (C . t)))
 
 ;; Org-fc
-;; NOTE: I cloned it in "~/.emacs.d/el/org-fc"
+;; git clone https://github.com/l3kn/org-fc ~/.emacs.d/el/org-fc
 (add-to-list 'load-path "~/.emacs.d/el/org-fc")
 
 (require 'org-fc)
 (setq org-fc-directories '("~/OrgFc"))
 
 ;; EMMS
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/emms")
-
 (require 'emms)
 (require 'emms-setup)
 (emms-all)
