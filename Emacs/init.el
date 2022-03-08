@@ -321,8 +321,8 @@
 (require 'dashboard)
 (dashboard-setup-startup-hook)
 
-(setq dashboard-banner-logo-title "Editor MACroS")
-(setq dashboard-startup-banner 'logo)
+(setq dashboard-banner-logo-title "No matter where you go, everybody's connected")
+(setq dashboard-startup-banner "~/Repositories/DotFiles/Emacs/logo.png")
 (setq dashboard-center-content nil)
 (setq dashboard-show-shortcuts nil)
 
