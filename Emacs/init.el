@@ -13,7 +13,7 @@
 					   use-package dashboard abyss-theme password-store
 					   spacemacs-theme visual-fill-column org-bullets
 					   all-the-icons elcord exwm org-roam org-tree-slide
-					   treemacs-all-the-icons lyrics-fetcher))
+					   treemacs-all-the-icons))
 
 (when (cl-find-if-not #'package-installed-p package-selected-packages)
   (package-refresh-contents)
@@ -420,10 +420,8 @@
 (emms-default-players)
 (setq emms-source-file-default-directory "~/Music")
 
-(setq emms-info-functions '(emms-info-tintytag))
-
-(autoload 'emms-smart-browse "emms-browser.el" "Browse with EMMS" t)
-(global-set-key [(f7)] 'emms-smart-browse)
+(require 'emms-info-libtag)
+(setq emms-info-functions '(emms-info-libtag))
 
 ;; org-tree-slide
 (defun presentation-setup ()
@@ -443,11 +441,3 @@
   (org-tree-single-header t)
   (org-tree-slide-breadcrumbs " // ")
   (org-image-actual-width nil))
-
-;; lyrics-fetcher
-(use-package lyrics-fetcher
-  :ensure t
-  :after (emms))
-
-(setq lyrics-fetcher-genius-access-token
-      (password-store-get "APIS/genius.com"))
