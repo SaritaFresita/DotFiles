@@ -1,6 +1,6 @@
 compton &
-setxkbmap -layout gb
-xrandr --output DP1 --mode 1600x900 --right-of eDP1
+setxkbmap -layout gb &
 xhost +SI:localuser:$USER
-feh --bg-scale ~/Repositories/DotFiles/wallpaper
-exec emacs
+xrandr --output DP1 --mode 1600x900 --right-of eDP1 &
+feh --bg-scale ~/Repositories/DotFiles/wallpaper &
+emacs

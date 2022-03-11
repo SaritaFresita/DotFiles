@@ -8,11 +8,11 @@
 					   hydra flycheck company
 					   avy which-key helm-xref
 					   dap-mode lsp-ui treemacs
-					   magit treemacs-magit
+					   magit treemacs-magit emmet-mode
 					   treemacs-projectile emms
 					   use-package dashboard abyss-theme
 					   spacemacs-theme visual-fill-column org-bullets
-					   all-the-icons elcord exwm org-roam org-tree-slide
+					   all-the-icons exwm org-roam org-tree-slide
 					   treemacs-all-the-icons))
 
 (when (cl-find-if-not #'package-installed-p package-selected-packages)
@@ -204,10 +204,6 @@
   (require 'treemacs-all-the-icons)
   (treemacs-load-theme "all-the-icons"))
 
-;; elcord
-(require 'elcord)
-(elcord-mode)
-
 ;; Some other configs
 (setq-default tab-width 2
 	          c-basic-offset 2
@@ -311,12 +307,12 @@
   (exwm-input-set-key (kbd "<XF86AudioLowerVolume>")
                       (lambda ()
                         (interactive)
-                        (start-process-shell-command "amixer -q sset Master 3%-" nil "amixer -q sset Master 3%-")))
+                        (emms-volume-lower)))
 
   (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>")
                       (lambda ()
                         (interactive)
-                        (start-process-shell-command "amixer -q sset Master 3%+" nil "amixer -q sset Master 3%+")))
+                        (emms-volume-raise)))
 
   (setq exwm-input-simulation-keys
         '(([?\C-b] . [left])
@@ -454,3 +450,9 @@
   (org-tree-single-header t)
   (org-tree-slide-breadcrumbs " // ")
   (org-image-actual-width nil))
+
+;; emmet-mode
+(require 'emmet-mode)
+
+(add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
+(add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
