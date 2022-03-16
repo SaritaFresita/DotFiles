@@ -376,11 +376,23 @@
   (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
   (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
 
+(defun update-org-modified-property ()
+  (interactive)
+  (save-excursion
+    (widen)
+    (goto-char (point-min))
+    (when (re-search-forward "^#\\+LAST_MODIFIED:" (point-max) t)
+      (progn
+        (kill-line)
+        (insert (format-time-string " %d/%m/%Y %H:%M:%S") )))))
+
 (use-package org
   :hook (org-mode . org-mode-setup)
   :config
   (setq org-ellipsis " ▾")
-  (org-font-setup))
+  (org-font-setup)
+  :init
+  (add-hook 'before-save-hook #'update-org-modified-property))
 
 (use-package org-bullets
   :after org

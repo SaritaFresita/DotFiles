@@ -1,9 +1,3 @@
 [submodule "Emacs/el/org-fc"]
 	path = Emacs/el/org-fc
 	url = https://github.com/l3kn/org-fc
-[submodule "Emacs/el/zencoding"]
-	path = Emacs/el/zencoding
-	url = https://github.com/rooney/zencoding
-[submodule "Emacs/el/emmet-mode"]
-	path = Emacs/el/emmet-mode
-	url = https://github.com/smihica/emmet-mode
