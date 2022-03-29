@@ -13,7 +13,7 @@
 					   use-package dashboard abyss-theme
 					   spacemacs-theme visual-fill-column org-bullets
 					   all-the-icons exwm org-roam org-tree-slide
-					   treemacs-all-the-icons))
+					   treemacs-all-the-icons elcord))
 
 (when (cl-find-if-not #'package-installed-p package-selected-packages)
   (package-refresh-contents)
@@ -181,6 +181,11 @@
 
 (add-hook 'prog-mode-hook #'show-column-and-lines)
 
+;; Disable autosave
+(setq auto-save-default nil)
+(setq backup-inhibited t)
+(setq create-lockfiles nil)
+
 ;; Theme
 (load-theme 'abyss t)
 
@@ -302,7 +307,7 @@
   (exwm-input-set-key (kbd "<print>")
         (lambda ()
           (interactive)
-          (start-process-shell-command "~/Repositories/DotFiles/scrot-xclip --select --freeze" nil "~/Repositories/DotFiles/scrot-xclip --select --freeze")))
+          (start-process-shell-command "~/Repos/DotFiles/scrot-xclip --select --freeze" nil "~/Repos/DotFiles/scrot-xclip --select --freeze")))
 
   (exwm-input-set-key (kbd "<XF86AudioLowerVolume>")
                       (lambda ()
@@ -333,7 +338,7 @@
 (dashboard-setup-startup-hook)
 
 (setq dashboard-banner-logo-title "No matter where you go, everybody's connected")
-(setq dashboard-startup-banner "~/Repositories/DotFiles/Emacs/logo.png")
+(setq dashboard-startup-banner "~/Repos/DotFiles/Emacs/logo.png")
 (setq dashboard-center-content nil)
 (setq dashboard-show-shortcuts nil)
 
@@ -384,7 +389,7 @@
     (when (re-search-forward "^#\\+LAST_MODIFIED:" (point-max) t)
       (progn
         (kill-line)
-        (insert (format-time-string " %d/%m/%Y %H:%M:%S") )))))
+        (insert (format-time-string " %Y-%m-%d %H:%M:%S") )))))
 
 (use-package org
   :hook (org-mode . org-mode-setup)
@@ -401,7 +406,7 @@
   (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
 (defun org-mode-visual-fill ()
-  (setq visual-fill-column-width 100
+  (setq visual-fill-column-width 140
         visual-fill-column-center-text t)
   (visual-fill-column-mode 1))
 
@@ -444,6 +449,10 @@
 (require 'emms-info-libtag)
 (setq emms-info-functions '(emms-info-libtag))
 
+;; libre.fm
+(require 'emms-librefm-scrobbler)
+(emms-librefm-scrobbler-enable)
+
 ;; org-tree-slide
 (defun presentation-setup ()
   (setq text-scale-mode-amount 2.5)
@@ -468,3 +477,13 @@
 
 (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
 (add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
+
+;; elcord
+(require 'elcord)
+(elcord-mode)
+
+;; Erc
+;; (add-to-list 'erc-modules 'notifications)
+
+(with-eval-after-load 'erc
+  (add-to-list 'erc-modules 'notifications))
