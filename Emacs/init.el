@@ -67,7 +67,7 @@
   (yas-global-mode))
 
 (defun my-c-mode-before-save-hook ()
-  (when (eq major-mode 'c-mode)
+  (when (or (eq major-mode 'c-mode) (eq major-mode 'js-mode))
     (lsp-format-buffer)))
 
 (add-hook 'before-save-hook #'my-c-mode-before-save-hook)
@@ -187,7 +187,7 @@
 (setq create-lockfiles nil)
 
 ;; Theme
-(load-theme 'abyss t)
+; (load-theme 'abyss t)
 
 ;; Some configurations
 (tool-bar-mode -1) ;; Hide toolbar and top menu
@@ -219,119 +219,121 @@
       focus-follow-mouse t)
 
 ;; EXWM
-(defun exwm-update-class ()
-  (exwm-workspace-rename-buffer exwm-class-name))
+;; (defun exwm-update-class ()
+;;   (exwm-workspace-rename-buffer exwm-class-name))
 
-(defun exwm-init-hook ()
-  (display-battery-mode 1)
+;; (defun exwm-init-hook ()
+;;   (display-battery-mode 1)
 
-  (setq display-time-and-date t)
-  (display-time-mode 1))
+;;   (setq display-time-and-date t)
+;;   (display-time-mode 1)
 
-(use-package exwm
-  :config
-  ;; Set the default number of workspaces
-  (setq exwm-workspace-number 10)
+;;   (setq display-time-24hr-format t))
 
-  ;; When window "class" updates, use it to set the buffer name
-  (add-hook 'exwm-update-class-hook #'exwm-update-class)
+;; (use-package exwm
+;;   :config
+;;   ;; Set the default number of workspaces
+;;   (setq exwm-workspace-number 10)
 
-  ;; When EXWM starts up, do some extra configuration
-  (add-hook 'exwm-init-hookj #'exwm-init-hook)
+;;   ;; When window "class" updates, use it to set the buffer name
+;;   (add-hook 'exwm-update-class-hook #'exwm-update-class)
 
-  ;; Rebind CapsLock to Ctrl
-  (start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/exwm/Xmodmap")
+;;   ;; When EXWM starts up, do some extra configuration
+;;   (add-hook 'exwm-init-hook #'exwm-init-hook)
 
-  ;; Set the screen resolution (update this to be the correct resolution for your screen!)
-  (require 'exwm-randr)
-  (exwm-randr-enable)
-  (start-process-shell-command "xrandr" nil "xrandr --output eDP1 --primary --mode 1366x768 --pos 0x0 --rotate normal")
-  (start-process-shell-command "xrandr" nil "xrandr --output DP1 --mode 1600x900 --right-of eDP1")
+;;   ;; Rebind CapsLock to Ctrl
+;;   (start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/exwm/Xmodmap")
 
-  ;; Assign workspaces to second monitor
-  (setq exwm-randr-workspace-monitor-plist '(1 "DP1" 3 "DP1" 5 "DP1" 7 "DP1" 9 "DP1"))
+;;   ;; Set the screen resolution (update this to be the correct resolution for your screen!)
+;;   (require 'exwm-randr)
+;;   (exwm-randr-enable)
+;;   (start-process-shell-command "xrandr" nil "xrandr --output eDP1 --primary --mode 1366x768 --pos 0x0 --rotate normal")
+;;   (start-process-shell-command "xrandr" nil "xrandr --output DP1 --mode 1600x900 --right-of eDP1")
 
-  ;; Load the system tray before exwm-init
-  (require 'exwm-systemtray)
-  (setq exwm-systemtray-height 32)
-  (exwm-systemtray-enable)
+;;   ;; Assign workspaces to second monitor
+;;   (setq exwm-randr-workspace-monitor-plist '(1 "DP1" 3 "DP1" 5 "DP1" 7 "DP1" 9 "DP1"))
 
-  ;; Automatically send the mouse cursor to the selected workspace's display
-  (setq exwm-workspace-warp-cursor t)
+;;   ;; Load the system tray before exwm-init
+;;   (require 'exwm-systemtray)
+;;   (setq exwm-systemtray-height 32)
+;;   (exwm-systemtray-enable)
 
-  ;; These keys should always pass through to Emacs
-  (setq exwm-input-prefix-keys
-        '(?\C-x
-          ?\C-u
-          ?\C-h
-          ?\M-x
-          ?\M-`
-          ?\M-&
-          ?\M-:
-          ?\C-\M-j  ;; Buffer list
-          ?\C-\ ))  ;; Ctrl+Space
+;;   ;; Automatically send the mouse cursor to the selected workspace's display
+;;   (setq exwm-workspace-warp-cursor t)
 
-  ;; Ctrl+Q will enable the next key to be sent directly
-  (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
+;;   ;; These keys should always pass through to Emacs
+;;   (setq exwm-input-prefix-keys
+;;         '(?\C-x
+;;           ?\C-u
+;;           ?\C-h
+;;           ?\M-x
+;;           ?\M-`
+;;           ?\M-&
+;;           ?\M-:
+;;           ?\C-\M-j  ;; Buffer list
+;;           ?\C-\ ))  ;; Ctrl+Space
 
-  ;; Set up global key bindings.  These always work, no matter the input state!
-  ;; Keep in mind that changing this list after EXWM initializes has no effect.
-  (setq exwm-input-global-keys
-        `(
-          ;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
-          ([?\s-r] . exwm-reset)
+;;   ;; Ctrl+Q will enable the next key to be sent directly
+;;   (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
 
-          ;; Move between windows
-          ([s-left] . windmove-left)
-          ([s-right] . windmove-right)
-          ([s-up] . windmove-up)
-          ([s-down] . windmove-down)
+;;   ;; Set up global key bindings.  These always work, no matter the input state!
+;;   ;; Keep in mind that changing this list after EXWM initializes has no effect.
+;;   (setq exwm-input-global-keys
+;;         `(
+;;           ;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
+;;           ([?\s-r] . exwm-reset)
 
-          ;; Launch applications via shell command
-          ([?\s-&] . (lambda (command)
-                       (interactive (list (read-shell-command "$ ")))
-                       (start-process-shell-command command nil command)))
+;;           ;; Move between windows
+;;           ([s-left] . windmove-left)
+;;           ([s-right] . windmove-right)
+;;           ([s-up] . windmove-up)
+;;           ([s-down] . windmove-down)
 
-          ;; Switch workspace
-          ([?\s-w] . exwm-workspace-switch)
-          ([?\s-`] . (lambda () (interactive) (exwm-workspace-switch-create 0)))
+;;           ;; Launch applications via shell command
+;;           ([?\s-&] . (lambda (command)
+;;                        (interactive (list (read-shell-command "$ ")))
+;;                        (start-process-shell-command command nil command)))
 
-          ;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
-          ,@(mapcar (lambda (i)
-                      `(,(kbd (format "s-%d" i)) .
-                        (lambda ()
-                          (interactive)
-                          (exwm-workspace-switch-create ,i))))
-                    (number-sequence 0 9))))
+;;           ;; Switch workspace
+;;           ([?\s-w] . exwm-workspace-switch)
+;;           ([?\s-`] . (lambda () (interactive) (exwm-workspace-switch-create 0)))
 
-  (exwm-input-set-key (kbd "<print>")
-        (lambda ()
-          (interactive)
-          (start-process-shell-command "~/Repos/DotFiles/scrot-xclip --select --freeze" nil "~/Repos/DotFiles/scrot-xclip --select --freeze")))
+;;           ;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
+;;           ,@(mapcar (lambda (i)
+;;                       `(,(kbd (format "s-%d" i)) .
+;;                         (lambda ()
+;;                           (interactive)
+;;                           (exwm-workspace-switch-create ,i))))
+;;                     (number-sequence 0 9))))
 
-  (exwm-input-set-key (kbd "<XF86AudioLowerVolume>")
-                      (lambda ()
-                        (interactive)
-                        (emms-volume-lower)))
+;;   (exwm-input-set-key (kbd "<print>")
+;;         (lambda ()
+;;           (interactive)
+;;           (start-process-shell-command "~/Repos/DotFiles/scrot-xclip --select --freeze" nil "~/Repos/DotFiles/scrot-xclip --select --freeze")))
 
-  (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>")
-                      (lambda ()
-                        (interactive)
-                        (emms-volume-raise)))
+;;   (exwm-input-set-key (kbd "<XF86AudioLowerVolume>")
+;;                       (lambda ()
+;;                         (interactive)
+;;                         (emms-volume-lower)))
 
-  (setq exwm-input-simulation-keys
-        '(([?\C-b] . [left])
-          ([?\C-f] . [right])
-          ([?\C-p] . [up])
-          ([?\C-n] . [down])
-          ([?\C-a] . [home])
-          ([?\C-e] . [end])
-          ([?\M-v] . [prior])
-          ([?\C-v] . [next])
-          ([?\C-d] . [delete])
-          ([?\C-k] . [S-end delete])))
+;;   (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>")
+;;                       (lambda ()
+;;                         (interactive)
+;;                         (emms-volume-raise)))
 
-  (exwm-enable))
+;;   (setq exwm-input-simulation-keys
+;;         '(([?\C-b] . [left])
+;;           ([?\C-f] . [right])
+;;           ([?\C-p] . [up])
+;;           ([?\C-n] . [down])
+;;           ([?\C-a] . [home])
+;;           ([?\C-e] . [end])
+;;           ([?\M-v] . [prior])
+;;           ([?\C-v] . [next])
+;;           ([?\C-d] . [delete])
+;;           ([?\C-k] . [S-end delete])))
+
+;;   (exwm-enable))
 
 ;; Dashboard
 (require 'dashboard)
@@ -353,7 +355,9 @@
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
   (org-display-inline-images)
   (setq org-clock-sound "~/.emacs.d/alert.wav")
-  (visual-line-mode 1))
+  (visual-line-mode 1)
+
+  (require 'org-tempo))
 
 (defun org-font-setup ()
   ;; Replace list hyphen with dot
@@ -430,7 +434,8 @@
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((emacs-lisp . nil)
-   (C . t)))
+   (C . t)
+   (python . t)))
 
 ;; Org-fc
 ;; git clone https://github.com/l3kn/org-fc ~/.emacs.d/el/org-fc
@@ -487,3 +492,16 @@
 
 (with-eval-after-load 'erc
   (add-to-list 'erc-modules 'notifications))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("3d4df186126c347e002c8366d32016948068d2e9198c496093a96775cc3b3eaa" default)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
