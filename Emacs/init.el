@@ -4,14 +4,14 @@
 (package-initialize)
 
 (setq package-selected-packages '(lsp-mode yasnippet lsp-treemacs
-					   helm-lsp projectile
-					   hydra flycheck company
+					   helm-lsp projectile csharp-mode format-all
+					   hydra flycheck company realgud fountain-mode
 					   avy which-key helm-xref
 					   dap-mode lsp-ui treemacs
 					   magit treemacs-magit emmet-mode
 					   treemacs-projectile emms
-					   use-package dashboard abyss-theme
-					   spacemacs-theme visual-fill-column org-bullets
+					   use-package dashboard
+					   visual-fill-column org-bullets
 					   all-the-icons exwm org-roam org-tree-slide
 					   treemacs-all-the-icons elcord))
 
@@ -51,7 +51,10 @@
   :hook
   (
    (c-mode . lsp))
-  :commands lsp)
+  :commands lsp
+
+  :custom
+  (lsp-keymap-prefix "C-c l"))
 
 (setq gc-cons-treshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024)
@@ -65,12 +68,6 @@
   (setq lsp-modeline-diagnostics-scope :workspace)
   (require 'dap-cpptools)
   (yas-global-mode))
-
-(defun my-c-mode-before-save-hook ()
-  (when (or (eq major-mode 'c-mode) (eq major-mode 'js-mode))
-    (lsp-format-buffer)))
-
-(add-hook 'before-save-hook #'my-c-mode-before-save-hook)
 
 ;; use-package
 (require 'use-package)
@@ -187,7 +184,7 @@
 (setq create-lockfiles nil)
 
 ;; Theme
-; (load-theme 'abyss t)
+(load-theme 'manoj-dark)
 
 ;; Some configurations
 (tool-bar-mode -1) ;; Hide toolbar and top menu
@@ -455,8 +452,8 @@
 (setq emms-info-functions '(emms-info-libtag))
 
 ;; libre.fm
-(require 'emms-librefm-scrobbler)
-(emms-librefm-scrobbler-enable)
+;; (require 'emms-librefm-scrobbler)
+;; (emms-librefm-scrobbler-enable)
 
 ;; org-tree-slide
 (defun presentation-setup ()
@@ -488,20 +485,11 @@
 (elcord-mode)
 
 ;; Erc
-;; (add-to-list 'erc-modules 'notifications)
-
 (with-eval-after-load 'erc
   (add-to-list 'erc-modules 'notifications))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("3d4df186126c347e002c8366d32016948068d2e9198c496093a96775cc3b3eaa" default)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
+;; Format-all
+(add-hook 'prog-mode-hook 'format-all-mode)
+
+;; Fountain
+(require 'fountain-mode)
