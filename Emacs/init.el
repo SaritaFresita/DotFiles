@@ -6,7 +6,7 @@
 (setq package-selected-packages '(lsp-mode yasnippet lsp-treemacs
 					   helm-lsp projectile csharp-mode format-all
 					   hydra flycheck company realgud fountain-mode
-					   avy which-key helm-xref
+					   avy which-key helm-xref xterm-keybinder
 					   dap-mode lsp-ui treemacs
 					   magit treemacs-magit emmet-mode
 					   treemacs-projectile emms
